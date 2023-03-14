@@ -9,7 +9,8 @@ const navigator = createStackNavigator(
   {
     initialRouteName: "Search",
     defaultNavigationOptions: {
-      title: "Business Search",
+      headerTitleAlign: "center",
+      title: "Food Explorer",
     },
   }
 );
