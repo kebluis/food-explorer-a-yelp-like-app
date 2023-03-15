@@ -5,13 +5,13 @@ import {
   StyleSheet,
   ActivityIndicator,
   FlatList,
-  ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import SearchBar from "../component/SearchBar";
-import yelp from "../api/yelp";
+import { getSearchedRestaurants } from "../api/yelp";
 import RestaurantDetail from "../component/RestaurantDetail";
 
-const SearchScreen = () => {
+const SearchScreen = ({ navigation: { navigate } }) => {
   const [searchValue, setSearchValue] = useState("");
   const [isInitial, setIsInitial] = useState(true);
   const [restaurants, setRestaurants] = useState([]);
@@ -26,28 +26,15 @@ const SearchScreen = () => {
 
   const searchSubmit = async () => {
     setLoading(true);
-    try {
-      const response = await yelp.get("/search", {
-        params: {
-          location: "NYC",
-          term: searchValue,
-          limit: 20,
-        },
-      });
-      setLoading(false);
-      setIsInitial(!searchValue);
-      setRestaurants(
-        !!response.data.businesses ? [...response.data.businesses] : []
-      );
-    } catch (error) {
-      setLoading(false);
-      console.error(error);
-    }
+    const response = await getSearchedRestaurants(searchValue);
+    setIsInitial(!searchValue);
+    setRestaurants(response.businesses ?? []);
+    setLoading(false);
   };
 
   const lastItem = (index) => {
-    return { paddingBottom: index === restaurants.length - 1 ? 140 : 0}
-  }
+    return { paddingBottom: index === restaurants.length - 1 ? 140 : 0 };
+  };
 
   return (
     <View>
@@ -64,20 +51,29 @@ const SearchScreen = () => {
             {isInitial ? "Recommended" : "Top Results"}
           </Text>
 
-            <FlatList
-              columnWrapperStyle={styles.recommended}
-              data={restaurants}
-              numColumns={2}
-              keyExtractor={(restaurants) => restaurants.id}
-              renderItem={({ item, index }) => {
-                const { name, image_url, rating, review_count } = item;
-                return (
+          <FlatList
+            columnWrapperStyle={styles.recommended}
+            data={restaurants}
+            numColumns={2}
+            keyExtractor={(restaurants) => restaurants.id}
+            renderItem={({ item, index }) => {
+              const { name, image_url, rating, review_count, id } = item;
+              return (
+                <TouchableOpacity
+                  onPress={() => navigate("Restaurant", { id })}
+                >
                   <View style={lastItem(index)}>
-                    <RestaurantDetail name={name} uri={image_url} rating={rating} reviewCount={review_count} />
+                    <RestaurantDetail
+                      name={name}
+                      uri={image_url}
+                      rating={rating}
+                      reviewCount={review_count}
+                    />
                   </View>
-                );
-              }}
-            />
+                </TouchableOpacity>
+              );
+            }}
+          />
         </>
       )}
     </View>
@@ -92,7 +88,7 @@ const styles = StyleSheet.create({
   },
   recommended: {
     justifyContent: "space-between",
-  }
+  },
 });
 
 export default SearchScreen;
