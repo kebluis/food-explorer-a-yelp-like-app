@@ -10,8 +10,11 @@ import {
 import SearchBar from "../component/SearchBar";
 import { getSearchedRestaurants } from "../api/yelp";
 import RestaurantDetail from "../component/RestaurantDetail";
+import { useNavigation } from "@react-navigation/native";
 
-const SearchScreen = ({ navigation: { navigate } }) => {
+const SearchScreen = () => {
+  const { navigate } = useNavigation();
+
   const [searchValue, setSearchValue] = useState("");
   const [isInitial, setIsInitial] = useState(true);
   const [restaurants, setRestaurants] = useState([]);

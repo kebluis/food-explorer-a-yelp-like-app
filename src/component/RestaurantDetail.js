@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
 
-const RestaurantDetail = ({ uri, name, rating, reviewCount }) => {
+const RestaurantDetail = ({ uri = "https://upload.wikimedia.org/wikipedia/commons/b/bc/Unknown_person.jpg", name, rating, reviewCount }) => {
   return (
     <View style={styles.detailContainer}>
       <Image style={styles.sampleImage} source={{ uri }} />
