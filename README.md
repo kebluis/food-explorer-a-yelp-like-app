@@ -22,7 +22,7 @@ Install the dependencies by running the script:
 npm install
 ```
 
-Insert your Yelp API Key as your Bearer token located at ## src/api/yelp.js: line 6
+Insert your Yelp API Key as your Bearer token located at src/api/yelp.js: line 6
 
 Then, run the development server:
 
